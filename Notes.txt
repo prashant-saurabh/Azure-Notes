@@ -1,0 +1,93 @@
+Creating Virtual-Machine (VM) in Azure:  (Static/Non-scalable)
+
+  Using UI:
+    1. Log in to: https://portal.azure.com
+    2. All services -> virtual machine -> Create
+    3. Select the following:  
+      Subscription
+      Resource group
+      Region
+      Availability zone
+      Image
+      Size
+      Username
+      Key pair name
+      Select inbound ports
+    4: Click "Review + Create"
+    5. Once it reviews, Click Create.
+
+  Now you VM will start creating.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Log in to your VM
+  
+  1. When You Create VM it also downloads identity file: <VM_name>_key.pem
+  2. Open GIT BASH
+  3. Give permission to the identity file: chmod 600 C/Users/prash/Downloads/first-vm_key.pem
+  4. ssh -i C/Users/prash/Downloads/first-vm_key.pem azureuser@20.167.48.2
+
+  You should be logged into your VM now.
+
+  Where:
+    C/Users/prash/Downloads/first-vm_key.pem - Location of identity file
+    azureuser - Username
+    20.167.48.2 - Public IP Adress of your VM
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Installing Jenkins on VM
+
+  1. Login to your VM
+
+    Pre-Requisites: Java (JDK)
+    Run the below commands to install Java and Jenkins
+
+  First Install Java
+
+    . sudo apt update (Connects to package repositories and Refreshes the package list)
+    . sudo apt install openjdk-17-jre
+
+  Verify Java is Installed
+
+    .  java -version
+
+  Now, you can proceed with installing Jenkins
+
+    . curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
+      /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+    .  echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+      https://pkg.jenkins.io/debian binary/ | sudo tee \
+      /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+    . sudo apt-get update
+    . sudo apt-get install jenkins
+
+  To see what port it is running:
+    . ps -ef | grep jenking (Get the process_id)
+    . sudo ss -tulnp | grep <process_id>
+
+  **Note: ** By default, Jenkins will not be accessible to the external world due to the inbound traffic restriction by Azure. Open port 8080 in the inbound traffic rules as show below.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+In Azure, ports are blocked by default due to security reason.
+
+To unlock a port:
+  1. Go to your VM
+  2. Network setting
+  3. Creatye port rule (inbound)
+  4. Destination port ranges -> 8080
+  5. Add
+
+Now you should be able to access jenkins by your browser.
+  . http://http://20.167.48.2:8080
+  
+-- Now the instance starts accepting the traffic
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+  
+  
+    
